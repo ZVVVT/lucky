@@ -71,7 +71,8 @@ function loadAndRenderHistory() {
     .then(allRecords => {
       const myRecords = allRecords
         .filter(r => r.deviceID === deviceID)
-        .reverse(); // 最新在前
+        .slice(-7)
+        .reverse();
 
       const listEl = document.getElementById("history-list");
       if (myRecords.length === 0) {
@@ -85,3 +86,4 @@ function loadAndRenderHistory() {
       console.error("❌ 无法加载历史记录", err);
     });
 }
+

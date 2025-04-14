@@ -56,6 +56,32 @@ function saveToServer(deviceID, prize) {
       time: new Date().toLocaleString()
     })
   }).then(res => res.json())
-    .then(data => console.log("🎯 后端记录成功：", data))
+    .then(data => {
+      console.log("🎯 后端记录成功：", data);
+      loadAndRenderHistory(); // ✅ ✅ ✅ 第四步：成功后刷新记录
+    })
     .catch(err => console.error("❌ 后端记录失败：", err));
+}
+
+
+// 从后端获取所有历史记录，筛选出本设备记录后显示
+function loadAndRenderHistory() {
+  fetch("https://lucky-server-masx.onrender.com/history")
+    .then(res => res.json())
+    .then(allRecords => {
+      const myRecords = allRecords
+        .filter(r => r.deviceID === deviceID)
+        .reverse(); // 最新在前
+
+      const listEl = document.getElementById("history-list");
+      if (myRecords.length === 0) {
+        listEl.innerHTML = "<i>暂无记录</i>";
+      } else {
+        listEl.innerHTML = myRecords.map(r =>
+          `<li>${r.time} | 🎁 ${r.prize}</li>`).join("");
+      }
+    })
+    .catch(err => {
+      console.error("❌ 无法加载历史记录", err);
+    });
 }

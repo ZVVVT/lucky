@@ -1,15 +1,20 @@
-// 获取或生成设备ID
-function getDeviceID() {
-  let deviceID = localStorage.getItem("device_id");
-  if (!deviceID) {
-    deviceID = crypto.randomUUID(); // 浏览器原生生成 UUID
-    localStorage.setItem("device_id", deviceID);
-  }
-  return deviceID;
+let deviceID = null;
+
+async function initDeviceID() {
+  const fp = await FingerprintJS.load();
+  const result = await fp.get();
+  deviceID = result.visitorId;
+
+  const deviceEl = document.getElementById("device-id");
+  if (deviceEl) deviceEl.innerText = `设备号：${deviceID}`;
+
+  loadAndRenderHistory(); // 等 fingerprint 获取完再加载历史
 }
 
+
+
 let prizes = [];
-const deviceID = getDeviceID();
+
 
 fetch('config.json')
   .then(response => response.json())
@@ -33,7 +38,7 @@ document.getElementById("drawBtn").addEventListener("click", () => {
   const index = Math.floor(Math.random() * prizes.length);
   const prize = prizes[index];  // ✅ 加上这行
   resultEl.innerText = `🎁 ${prize}`;
-  saveToServer(deviceID, prize);
+  saveToServer(prize); // 不再传 deviceID
 });
 
 
@@ -43,9 +48,9 @@ document.getElementById("drawBtn").addEventListener("click", () => {
 
   // 显示设备号
   deviceEl.innerText = `设备号：${deviceID}`;
-  loadAndRenderHistory();  // ✅ 打开页面自动加载历史记录
+  initDeviceID(); // ✅ 初始化 fingerprint 并加载记录
 });
-function saveToServer(deviceID, prize) {
+function saveToServer(prize) {
   fetch("https://lucky-server-masx.onrender.com/submit", {
     method: "POST",
     headers: {
@@ -59,10 +64,11 @@ function saveToServer(deviceID, prize) {
   }).then(res => res.json())
     .then(data => {
       console.log("🎯 后端记录成功：", data);
-      loadAndRenderHistory(); // ✅ ✅ ✅ 第四步：成功后刷新记录
+      loadAndRenderHistory();
     })
     .catch(err => console.error("❌ 后端记录失败：", err));
 }
+
 
 
 // 从后端获取所有历史记录，筛选出本设备记录后显示

@@ -37,12 +37,13 @@ document.getElementById("drawBtn").addEventListener("click", () => {
 });
 
 
-  document.getElementById("resetBtn").addEventListener("click", () => {
-    resultEl.innerText = "点击上方按钮抽奖";
-  });
+ document.getElementById("resetBtn").addEventListener("click", () => {
+   resultEl.innerText = "点击上方按钮抽奖";
+ });
 
   // 显示设备号
   deviceEl.innerText = `设备号：${deviceID}`;
+  loadAndRenderHistory();  // ✅ 打开页面自动加载历史记录
 });
 function saveToServer(deviceID, prize) {
   fetch("https://lucky-server-masx.onrender.com/submit", {

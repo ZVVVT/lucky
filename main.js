@@ -5,7 +5,7 @@ let isFingerprintReady = false;
 
 async function initDeviceID() {
   try {
-    const fp = await window.FingerprintJS.load(); // ✅ 使用 window 引用全局对象
+    const fp = await FingerprintJS.load();
     const result = await fp.get();
     deviceID = result.visitorId;
     isFingerprintReady = true;
@@ -19,7 +19,6 @@ async function initDeviceID() {
     alert("无法初始化设备号，请刷新页面后重试。");
   }
 }
-
 
 let prizes = [];
 

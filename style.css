@@ -7,6 +7,14 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
+  font-size: 16px;
+}
+
+html, body {
+  touch-action: manipulation;
+  -ms-touch-action: manipulation;
+  overscroll-behavior: none;
+  -webkit-text-size-adjust: 100%; /* 禁止 iOS 自动放大文字 */
 }
 
 .container {
@@ -41,6 +49,9 @@ button {
   color: white;
   margin-bottom: 16px;
   transition: background-color 0.3s ease;
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 button:hover {

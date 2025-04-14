@@ -1,3 +1,4 @@
+
 let deviceID = null;
 let userName = localStorage.getItem("user_name") || "";
 let isFingerprintReady = false;
@@ -19,10 +20,9 @@ async function initDeviceID() {
   }
 }
 
-
 let prizes = [];
 
-fetch('config.json')
+fetch("config.json")
   .then(response => response.json())
   .then(data => {
     prizes = data.prizes;
@@ -32,7 +32,7 @@ fetch('config.json')
     prizes = ["谢谢参与"];
   });
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
   const resultEl = document.getElementById("result");
   const nameInput = document.getElementById("nameInput");
 
@@ -46,15 +46,19 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   document.getElementById("drawBtn").addEventListener("click", () => {
-    if (!userName) {
-      alert("请先输入您的姓名！");
+    if (!isFingerprintReady || !deviceID) {
+      alert("设备识别中，请稍候...");
       return;
     }
-
+    if (!userName) {
+      alert("请输入您的姓名！");
+      return;
+    }
     if (prizes.length === 0) {
       resultEl.innerText = "奖项未加载，请稍后再试";
       return;
     }
+
     const index = Math.floor(Math.random() * prizes.length);
     const prize = prizes[index];
     resultEl.innerText = `🎁 ${prize}`;
@@ -69,6 +73,9 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function saveToServer(prize) {
+  const time = new Date().toLocaleString();
+  console.log("正在提交：", { deviceID, name: userName, prize, time });
+
   fetch("https://lucky-server-masx.onrender.com/submit", {
     method: "POST",
     headers: {
@@ -78,34 +85,29 @@ function saveToServer(prize) {
       deviceID,
       name: userName,
       prize,
-      time: new Date().toLocaleString()
+      time
     })
-  }).then(res => res.json())
+  })
+    .then(res => res.json())
     .then(data => {
-      console.log("🎯 后端记录成功：", data);
+      console.log("🎯 记录成功", data);
       loadAndRenderHistory();
     })
-    .catch(err => console.error("❌ 后端记录失败：", err));
+    .catch(err => console.error("❌ 提交失败", err));
 }
 
 function loadAndRenderHistory() {
   fetch("https://lucky-server-masx.onrender.com/history")
     .then(res => res.json())
-    .then(allRecords => {
-      const myRecords = allRecords
-        .filter(r => r.deviceID === deviceID)
-        .slice(-7)
-        .reverse();
-
-      const listEl = document.getElementById("history-list");
-      if (myRecords.length === 0) {
-        listEl.innerHTML = "<i>暂无记录</i>";
+    .then(all => {
+      const historyList = document.getElementById("history-list");
+      const mine = all.filter(r => r.deviceID === deviceID).slice(-7).reverse();
+      if (mine.length === 0) {
+        historyList.innerHTML = "<i>暂无记录</i>";
       } else {
-        listEl.innerHTML = myRecords.map(r =>
-          `<li>${r.time} | 🎁 ${r.prize} | 👤 ${r.name || '匿名'}</li>`).join("");
+        historyList.innerHTML = mine.map(r =>
+          `<li>${r.time} | 🎁 ${r.prize} | 👤 ${r.name}</li>`
+        ).join("");
       }
-    })
-    .catch(err => {
-      console.error("❌ 无法加载历史记录", err);
     });
 }

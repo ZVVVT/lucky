@@ -1,23 +1,20 @@
+
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <script src="https://openfpcdn.io/fingerprintjs/v3"></script>
-  <title>幸运抽奖</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🎉 幸运抽奖</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="container">
     <h1>🎉 幸运抽奖</h1>
     <div class="card">
-      <div style="margin-bottom: 20px;">
-        <label for="nameInput">请输入您的姓名：</label>
-        <input type="text" id="nameInput" placeholder="如：张三" style="width: 100%; padding: 10px; border-radius: 10px; border: 1px solid #ccc; margin-top: 5px;">
-      </div>
+      <label for="nameInput">请输入您的姓名：</label>
+      <input type="text" id="nameInput" placeholder="如：ZVVT" />
       <button id="drawBtn">抽一个奖！</button>
       <div id="result">点击上方按钮抽奖</div>
-      <div id="device-id"></div>
       <button id="resetBtn" class="secondary">清空结果</button>
     </div>
     <div style="margin-top: 20px;">
@@ -25,8 +22,6 @@
       <ul id="history-list" style="padding-left: 20px; font-size: 14px; color: #555;"></ul>
     </div>
   </div>
-  <!-- index.html 中的尾部位置 -->
-<script src="fp.min.js" defer></script> <!-- ✅ 必须先加载 fingerprint 脚本 -->
-<script src="main.js" defer></script>    <!-- ✅ 然后才执行你自己的逻辑 -->
+  <script src="main.js"></script>
 </body>
 </html>

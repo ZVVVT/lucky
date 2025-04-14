@@ -1,70 +1,47 @@
+
 body {
   margin: 0;
-  padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", sans-serif;
-  background-color: #f2f2f7;
+  font-family: "Helvetica Neue", sans-serif;
+  background: #f2f2f7;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  font-size: 16px;
 }
-
-html, body {
-  touch-action: manipulation;
-  overscroll-behavior: none;
-  -webkit-text-size-adjust: 100%;
-}
-
 .container {
   width: 100%;
   max-width: 400px;
   padding: 20px;
-  box-sizing: border-box;
 }
-
 h1 {
   text-align: center;
-  color: #111;
-  font-weight: 600;
-  font-size: 26px;
 }
-
 .card {
-  background-color: #fff;
-  border-radius: 18px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
-  padding: 30px 20px;
-  text-align: center;
-}
-
-button {
-  width: 100%;
-  padding: 14px;
-  font-size: 16px;
+  background: white;
   border-radius: 12px;
-  border: none;
-  background-color: #007aff;
+  padding: 20px;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+}
+input, button {
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+button {
+  background: #007aff;
   color: white;
-  margin-bottom: 16px;
-  transition: background-color 0.3s ease;
-  touch-action: manipulation;
-  user-select: none;
+  border: none;
 }
-
-button:hover {
-  background-color: #005fd3;
-}
-
 button.secondary {
-  background-color: #d1d1d6;
+  background: #ccc;
   color: #333;
 }
-
 #result {
-  font-size: 20px;
-  font-weight: 500;
-  margin-top: 10px;
-  color: #ff3b30;
-  min-height: 40px;
+  margin: 10px 0;
+  text-align: center;
+  color: #e60026;
+  min-height: 24px;
 }

@@ -1,6 +1,6 @@
-let deviceID = null;
-let userName = localStorage.getItem("user_name") || ""; // 本地缓存用户名
 
+let deviceID = null;
+let userName = localStorage.getItem("user_name") || "";
 
 async function initDeviceID() {
   const fp = await FingerprintJS.load();
@@ -10,13 +10,10 @@ async function initDeviceID() {
   const deviceEl = document.getElementById("device-id");
   if (deviceEl) deviceEl.innerText = `设备号：${deviceID}`;
 
-  loadAndRenderHistory(); // 等 fingerprint 获取完再加载历史
+  loadAndRenderHistory();
 }
 
-
-
 let prizes = [];
-
 
 fetch('config.json')
   .then(response => response.json())
@@ -29,6 +26,7 @@ fetch('config.json')
   });
 
 document.addEventListener('DOMContentLoaded', () => {
+  const resultEl = document.getElementById("result");
   const nameInput = document.getElementById("nameInput");
 
   if (userName) {
@@ -40,20 +38,35 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem("user_name", userName);
   });
 
-  initDeviceID(); // 获取 fingerprint 并加载记录
+  document.getElementById("drawBtn").addEventListener("click", () => {
+    if (!userName) {
+      alert("请先输入您的姓名！");
+      return;
+    }
+
+    if (prizes.length === 0) {
+      resultEl.innerText = "奖项未加载，请稍后再试";
+      return;
+    }
+    const index = Math.floor(Math.random() * prizes.length);
+    const prize = prizes[index];
+    resultEl.innerText = `🎁 ${prize}`;
+    saveToServer(prize);
+  });
+
+  document.getElementById("resetBtn").addEventListener("click", () => {
+    resultEl.innerText = "点击上方按钮抽奖";
+  });
+
+  initDeviceID();
 });
 
-
-
 function saveToServer(prize) {
-  if (!userName) {
-    alert("请先输入您的姓名！");
-    return;
-  }
-
   fetch("https://lucky-server-masx.onrender.com/submit", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json"
+    },
     body: JSON.stringify({
       deviceID,
       name: userName,
@@ -62,16 +75,12 @@ function saveToServer(prize) {
     })
   }).then(res => res.json())
     .then(data => {
-      console.log("🎯 记录成功：", data);
+      console.log("🎯 后端记录成功：", data);
       loadAndRenderHistory();
     })
-    .catch(err => console.error("❌ 提交失败：", err));
+    .catch(err => console.error("❌ 后端记录失败：", err));
 }
 
-
-
-
-// 从后端获取所有历史记录，筛选出本设备记录后显示
 function loadAndRenderHistory() {
   fetch("https://lucky-server-masx.onrender.com/history")
     .then(res => res.json())
@@ -86,11 +95,10 @@ function loadAndRenderHistory() {
         listEl.innerHTML = "<i>暂无记录</i>";
       } else {
         listEl.innerHTML = myRecords.map(r =>
-          `<li>${r.time} | 🎁 ${r.prize}</li>`).join("");
+          `<li>${r.time} | 🎁 ${r.prize} | 👤 ${r.name || '匿名'}</li>`).join("");
       }
     })
     .catch(err => {
       console.error("❌ 无法加载历史记录", err);
     });
 }
-

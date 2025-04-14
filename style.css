@@ -14,7 +14,7 @@ html, body {
   touch-action: manipulation;
   -ms-touch-action: manipulation;
   overscroll-behavior: none;
-  -webkit-text-size-adjust: 100%; /* 禁止 iOS 自动放大文字 */
+  -webkit-text-size-adjust: 100%;
 }
 
 .container {

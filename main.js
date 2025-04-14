@@ -1,4 +1,6 @@
 let deviceID = null;
+let userName = localStorage.getItem("user_name") || ""; // 本地缓存用户名
+
 
 async function initDeviceID() {
   const fp = await FingerprintJS.load();
@@ -27,47 +29,45 @@ fetch('config.json')
   });
 
 document.addEventListener('DOMContentLoaded', () => {
-  const resultEl = document.getElementById("result");
-  const deviceEl = document.getElementById("device-id");
+  const nameInput = document.getElementById("nameInput");
 
-document.getElementById("drawBtn").addEventListener("click", () => {
-  if (prizes.length === 0) {
-    resultEl.innerText = "奖项未加载，请稍后再试";
+  if (userName) {
+    nameInput.value = userName;
+  }
+
+  nameInput.addEventListener("input", (e) => {
+    userName = e.target.value.trim();
+    localStorage.setItem("user_name", userName);
+  });
+
+  initDeviceID(); // 获取 fingerprint 并加载记录
+});
+
+
+
+function saveToServer(prize) {
+  if (!userName) {
+    alert("请先输入您的姓名！");
     return;
   }
-  const index = Math.floor(Math.random() * prizes.length);
-  const prize = prizes[index];  // ✅ 加上这行
-  resultEl.innerText = `🎁 ${prize}`;
-  saveToServer(prize); // 不再传 deviceID
-});
 
-
- document.getElementById("resetBtn").addEventListener("click", () => {
-   resultEl.innerText = "点击上方按钮抽奖";
- });
-
-  // 显示设备号
-  deviceEl.innerText = `设备号：${deviceID}`;
-  initDeviceID(); // ✅ 初始化 fingerprint 并加载记录
-});
-function saveToServer(prize) {
   fetch("https://lucky-server-masx.onrender.com/submit", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       deviceID,
+      name: userName,
       prize,
       time: new Date().toLocaleString()
     })
   }).then(res => res.json())
     .then(data => {
-      console.log("🎯 后端记录成功：", data);
+      console.log("🎯 记录成功：", data);
       loadAndRenderHistory();
     })
-    .catch(err => console.error("❌ 后端记录失败：", err));
+    .catch(err => console.error("❌ 提交失败：", err));
 }
+
 
 
 

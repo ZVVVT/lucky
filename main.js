@@ -36,13 +36,24 @@ document.addEventListener("DOMContentLoaded", () => {
 function saveToServer(name, prize) {
   fetch("https://lucky-server-masx.onrender.com/submit", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name, prize, time: new Date().toLocaleString() })
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      deviceID: "static",  // 👉 不再使用 FingerprintJS，直接写死或改为 localStorage 中的值
+      name,
+      prize,
+      time: new Date().toLocaleString()
+    })
   })
   .then(res => res.json())
-  .then(() => loadHistory(name))
-  .catch(err => console.error("记录失败：", err));
+  .then(data => {
+    console.log("✅ 记录成功", data);
+    loadHistory(name);
+  })
+  .catch(err => console.error("❌ 记录失败", err));
 }
+
 
 function loadHistory(name) {
   fetch("https://lucky-server-masx.onrender.com/history")

@@ -1,4 +1,15 @@
+// 获取或生成设备ID
+function getDeviceID() {
+  let deviceID = localStorage.getItem("device_id");
+  if (!deviceID) {
+    deviceID = crypto.randomUUID(); // 浏览器原生生成 UUID
+    localStorage.setItem("device_id", deviceID);
+  }
+  return deviceID;
+}
+
 let prizes = [];
+const deviceID = getDeviceID();
 
 fetch('config.json')
   .then(response => response.json())
@@ -12,6 +23,7 @@ fetch('config.json')
 
 document.addEventListener('DOMContentLoaded', () => {
   const resultEl = document.getElementById("result");
+  const deviceEl = document.getElementById("device-id");
 
   document.getElementById("drawBtn").addEventListener("click", () => {
     if (prizes.length === 0) {
@@ -25,4 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById("resetBtn").addEventListener("click", () => {
     resultEl.innerText = "点击上方按钮抽奖";
   });
+
+  // 显示设备号
+  deviceEl.innerText = `设备号：${deviceID}`;
 });

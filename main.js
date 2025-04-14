@@ -25,16 +25,17 @@ document.addEventListener('DOMContentLoaded', () => {
   const resultEl = document.getElementById("result");
   const deviceEl = document.getElementById("device-id");
 
-  document.getElementById("drawBtn").addEventListener("click", () => {
-    if (prizes.length === 0) {
-      resultEl.innerText = "奖项未加载，请稍后再试";
-      return;
-    }
-    const index = Math.floor(Math.random() * prizes.length);
-    resultEl.innerText = `🎁 ${prizes[index]}`;
-	// ✅ 记录抽奖结果到后端
-	saveToServer(deviceID, prize);
-  });
+document.getElementById("drawBtn").addEventListener("click", () => {
+  if (prizes.length === 0) {
+    resultEl.innerText = "奖项未加载，请稍后再试";
+    return;
+  }
+  const index = Math.floor(Math.random() * prizes.length);
+  const prize = prizes[index];  // ✅ 加上这行
+  resultEl.innerText = `🎁 ${prize}`;
+  saveToServer(deviceID, prize);
+});
+
 
   document.getElementById("resetBtn").addEventListener("click", () => {
     resultEl.innerText = "点击上方按钮抽奖";

@@ -1,17 +1,24 @@
-
 let deviceID = null;
 let userName = localStorage.getItem("user_name") || "";
+let isFingerprintReady = false;
 
 async function initDeviceID() {
-  const fp = await FingerprintJS.load();
-  const result = await fp.get();
-  deviceID = result.visitorId;
+  try {
+    const fp = await FingerprintJS.load();
+    const result = await fp.get();
+    deviceID = result.visitorId;
+    isFingerprintReady = true;
 
-  const deviceEl = document.getElementById("device-id");
-  if (deviceEl) deviceEl.innerText = `设备号：${deviceID}`;
+    const deviceEl = document.getElementById("device-id");
+    if (deviceEl) deviceEl.innerText = `设备号：${deviceID}`;
 
-  loadAndRenderHistory();
+    loadAndRenderHistory();
+  } catch (err) {
+    console.error("❌ 指纹识别失败", err);
+    alert("无法初始化设备号，请刷新页面后重试。");
+  }
 }
+
 
 let prizes = [];
 

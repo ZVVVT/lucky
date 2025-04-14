@@ -32,6 +32,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     const index = Math.floor(Math.random() * prizes.length);
     resultEl.innerText = `🎁 ${prizes[index]}`;
+	// ✅ 记录抽奖结果到后端
+	saveToServer(deviceID, prize);
   });
 
   document.getElementById("resetBtn").addEventListener("click", () => {
@@ -41,3 +43,18 @@ document.addEventListener('DOMContentLoaded', () => {
   // 显示设备号
   deviceEl.innerText = `设备号：${deviceID}`;
 });
+function saveToServer(deviceID, prize) {
+  fetch("https://lucky-server-masx.onrender.com/submit", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      deviceID,
+      prize,
+      time: new Date().toLocaleString()
+    })
+  }).then(res => res.json())
+    .then(data => console.log("🎯 后端记录成功：", data))
+    .catch(err => console.error("❌ 后端记录失败：", err));
+}

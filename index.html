@@ -25,6 +25,8 @@
       <ul id="history-list" style="padding-left: 20px; font-size: 14px; color: #555;"></ul>
     </div>
   </div>
-  <script src="main.js"></script>
+  <!-- index.html 中的尾部位置 -->
+<script src="fp.min.js" defer></script> <!-- ✅ 必须先加载 fingerprint 脚本 -->
+<script src="main.js" defer></script>    <!-- ✅ 然后才执行你自己的逻辑 -->
 </body>
 </html>
